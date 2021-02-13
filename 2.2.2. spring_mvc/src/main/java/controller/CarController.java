@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import service.ServiceCar;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -24,7 +25,14 @@ public class CarController {
     }
 
     @GetMapping(value = "/cars")
-    public String getCars(@RequestParam("count") Integer count, ModelMap modelMap) {
-        return serviceCar.getCarCountOfModelMap(count, modelMap);
+    public String getCars(HttpServletRequest request, ModelMap modelMap) {
+         int count = 0;
+        String value =request.getParameter("count");
+        if (value != null) {
+            count += Integer.parseInt(value);
+        }
+        List<Car> cars = serviceCar.getCarOfNumber(count);
+        modelMap.addAttribute("cars", cars);
+        return "cars";
     }
 }
