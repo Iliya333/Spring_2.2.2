@@ -3,12 +3,12 @@ package controller;
 import model.Car;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import service.ServiceCar;
 
-import javax.servlet.http.HttpServletRequest;
+
 import java.util.List;
 
 @Controller
@@ -25,14 +25,15 @@ public class CarController {
     }
 
     @GetMapping(value = "/cars")
-    public String getCars(HttpServletRequest request, ModelMap modelMap) {
-         int count = 0;
-        String value =request.getParameter("count");
-        if (value != null) {
-            count += Integer.parseInt(value);
+    public String getCars(@RequestParam(value = "count", defaultValue = "0") int count, Model model) {
+        if (count == 0){
+            count = serviceCar.getSize();
         }
-        List<Car> cars = serviceCar.getCarOfNumber(count);
-        modelMap.addAttribute("cars", cars);
+        List<Car> carList = serviceCar.getCarList(count);
+        model.addAttribute("cars", carList);
         return "cars";
     }
+
 }
+
+
